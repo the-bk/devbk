@@ -28,12 +28,26 @@ To debug in IntelliJ Idea, open the 'Maven Projects' tool window (View
 version = "2023.05"
 
 project {
+    val bts = sequential {
+        buildType(Maven("Dev Build","clean compile"))
+        parrallel{
+            buildType(Maven("Dev Fast Test","clean test","-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"))
+            buildType(Maven("Dev Slow Test","clean test","-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"))
+        }
+        buildType(Maven("Dev Package","clean package","-Dmaven.test.failure.ignore=true"))
+    }.buildSteps()
 
-    buildType(Build)
+    bts.forEach{ buildType(it) }
+    bts.last().triggers {
+        vcs {
+
+        }
+    }
 }
 
-object Build : BuildType({
-    name = "Build"
+class Maven(name: String, goals: Strings, runnerArgs: String? = null) : BuildType ({
+    id(name.toExtId())
+    this.name = name
 
     vcs {
         root(DslContext.settingsRoot)
@@ -41,18 +55,8 @@ object Build : BuildType({
 
     steps {
         maven {
-            goals = "clean test"
-            runnerArgs = "-Dmaven.test.failure.ignore=true"
+            this.goals = goals
+            this.runnerArgs = runnerArgs
         }
-    }
-
-    triggers {
-        vcs {
-        }
-    }
-
-    features {
-        perfmon {
-        }
-    }
+    }    
 })
