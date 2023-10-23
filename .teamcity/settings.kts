@@ -29,12 +29,12 @@ version = "2023.05"
 
 project {
     val bts = sequential {
-        buildType(Maven("Dev Build","clean compile"))
+        buildType(Maven("Build","clean compile"))
         parrallel{
-            buildType(Maven("Dev Fast Test","clean test","-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"))
-            buildType(Maven("Dev Slow Test","clean test","-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"))
+            buildType(Maven("Fast Test","clean test","-Dmaven.test.failure.ignore=true -Dtest=*.unit.*Test"))
+            buildType(Maven("Slow Test","clean test","-Dmaven.test.failure.ignore=true -Dtest=*.integration.*Test"))
         }
-        buildType(Maven("Dev Package","clean package","-Dmaven.test.failure.ignore=true"))
+        buildType(Maven("Package","clean package","-Dmaven.test.failure.ignore=true"))
     }.buildSteps()
 
     bts.forEach{ buildType(it) }
