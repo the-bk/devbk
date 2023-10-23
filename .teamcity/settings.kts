@@ -2,7 +2,7 @@ import jetbrains.buildServer.configs.kotlin.*
 import jetbrains.buildServer.configs.kotlin.buildFeatures.perfmon
 import jetbrains.buildServer.configs.kotlin.buildSteps.maven
 import jetbrains.buildServer.configs.kotlin.triggers.vcs
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.parallelTests
 
 /*
 The settings script is an entry point for defining a TeamCity
@@ -71,7 +71,7 @@ project {
 
     sequential {
         buildType(Build)
-        parrallel{
+        parrallel {
             buildType(FastTest)
             buildType(SlowTest)
         }
